@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mirror + Caesar Cipher Encoder/Decoder</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    background: #f0f0f0;
+    color: #333;
+  }
+  h1 {
+    text-align: center;
+  }
+  textarea {
+    width: 100%;
+    height: 100px;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  button {
+    font-size: 1.1rem;
+    padding: 10px 20px;
+    margin: 0 10px 20px 0;
+    cursor: pointer;
+  }
+  #output {
+    white-space: pre-wrap;
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #ccc;
+    min-height: 50px;
+    font-size: 1.2rem;
+  }
+</style>
+</head>
+<body>
+
+<h1>Mirror + Caesar Cipher</h1>
+
+<label for="inputText">Enter text:</label>
+<textarea id="inputText" placeholder="Type your message here..."></textarea>
+
+<div>
+  <button onclick="encode()">Encode</button>
+  <button onclick="decode()">Decode</button>
+  <button onclick="clearAll()">Clear</button>
+</div>
+
+<h2>Result:</h2>
+<div id="output"></div>
+
+<script>
+ 
+  const mirrorMap = {
+    A: 'Z', B: 'Y', C: 'X', D: 'W', E: 'V', F: 'U', G: 'T', H: 'S',
+    I: 'R', J: 'Q', K: 'P', L: 'O', M: 'N', N: 'M', O: 'L', P: 'K',
+    Q: 'J', R: 'I', S: 'H', T: 'G', U: 'F', V: 'E', W: 'D', X: 'C',
+    Y: 'B', Z: 'A'
+  };
+
+  function mirrorLetter(char) {
+    const upperChar = char.toUpperCase();
+    if (mirrorMap[upperChar]) {
+      
+      const mirrored = mirrorMap[upperChar];
+      return (char === char.toUpperCase()) ? mirrored : mirrored.toLowerCase();
+    }
+    return char; 
+  }
+
+ 
+  function caesarShift(char, shift) {
+    const isUpper = char === char.toUpperCase();
+    const base = isUpper ? 65 : 97;
+    const code = char.charCodeAt(0);
+    if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
+      
+      const shiftedCode = ((code - base + shift + 26) % 26) + base;
+      return String.fromCharCode(shiftedCode);
+    }
+    return char;
+  }
+
+  function encode() {
+    const input = document.getElementById('inputText').value;
+    if (!input) {
+      alert('Please enter some text to encode.');
+      return;
+    }
+
+    
+    let mirrored = '';
+    for (const ch of input) {
+      mirrored += mirrorLetter(ch);
+    }
+
+   
+    let encoded = '';
+    for (const ch of mirrored) {
+      encoded += caesarShift(ch, 3);
+    }
+
+    document.getElementById('output').textContent = encoded;
+  }
+
+  function decode() {
+    const input = document.getElementById('inputText').value;
+    if (!input) {
+      alert('Please enter some text to decode.');
+      return;
+    }
+
+   
+    let shiftedBack = '';
+    for (const ch of input) {
+      shiftedBack += caesarShift(ch, -3);
+    }
+
+   
+    let decoded = '';
+    for (const ch of shiftedBack) {
+      decoded += mirrorLetter(ch);
+    }
+
+    document.getElementById('output').textContent = decoded;
+  }
+
+  function clearAll() {
+    document.getElementById('inputText').value = '';
+    document.getElementById('output').textContent = '';
+  }
+</script>
+
+</body>
+</html>
